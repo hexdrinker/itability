@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://itability.vercel.app').replace(/\/$/, '')
@@ -31,7 +32,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang='ko'>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }

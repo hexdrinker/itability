@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
+import { track } from '@vercel/analytics'
 
 const EXAMPLES = [
   '맥도날드 드라이브스루 알바',
@@ -20,7 +21,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const captureCardRef = useRef<HTMLDivElement>(null)
 
-  async function handleTransform() {
+  async function handleTransform(method: 'button' | 'enter' = 'button') {
     if (!input.trim() || loading) return
     setLoading(true)
     setResult('')
@@ -36,6 +37,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || '변환 실패')
       setResult(data.result)
       setLastTransformedInput(input)
+      track('transform', { method })
     } catch (e) {
       setError(e instanceof Error ? e.message : '오류가 발생했습니다')
     } finally {
@@ -45,6 +47,7 @@ export default function Home() {
 
   async function handleCapture() {
     if (!captureCardRef.current) return
+    track('capture')
     const canvas = await html2canvas(captureCardRef.current, {
       useCORS: true,
       scale: 2,
@@ -219,7 +222,7 @@ export default function Home() {
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
-                  handleTransform()
+                  handleTransform('enter')
                 }
               }}
               placeholder={'맥도날드\n드라이브스루에서\n일함'}
@@ -313,6 +316,7 @@ export default function Home() {
                   navigator.clipboard.writeText(result)
                   setCopied(true)
                   setTimeout(() => setCopied(false), 2000)
+                  track('copy')
                 }}
                 className='w-full sm:w-auto border border-zinc-700 hover:border-amber-500/50 hover:text-amber-400 text-zinc-400 font-medium text-base px-5 py-3 rounded-xl transition-colors'
               >
