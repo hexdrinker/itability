@@ -19,8 +19,9 @@ export default function Home() {
   const [lastTransformedInput, setLastTransformedInput] = useState('')
   const captureRef = useRef<HTMLDivElement>(null)
 
-  async function handleTransform() {
-    if (!input.trim()) return
+  async function handleTransformJob(job: string) {
+    if (!job.trim()) return
+    setInput(job)
     setLoading(true)
     setResult('')
     setError('')
@@ -29,17 +30,21 @@ export default function Home() {
       const res = await fetch('/api/transform', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job: input }),
+        body: JSON.stringify({ job }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || '변환 실패')
       setResult(data.result)
-      setLastTransformedInput(input)
+      setLastTransformedInput(job)
     } catch (e) {
       setError(e instanceof Error ? e.message : '오류가 발생했습니다')
     } finally {
       setLoading(false)
     }
+  }
+
+  async function handleTransform() {
+    await handleTransformJob(input)
   }
 
   async function handleCapture() {
@@ -170,7 +175,7 @@ export default function Home() {
           {EXAMPLES.map((ex) => (
             <button
               key={ex}
-              onClick={() => setInput(ex)}
+              onClick={() => handleTransformJob(ex)}
               className='text-xs text-zinc-500 hover:text-zinc-300 bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded-full transition-colors'
             >
               {ex}
