@@ -15,8 +15,7 @@ export default function NotFound() {
             />
           </div>
           <div className='flex-1 flex flex-col justify-center items-center p-5 bg-white'>
-            <p className='text-black text-2xl font-black text-center'>404</p>
-            <p className='text-black text-xl font-bold text-center'>페이지 없음</p>
+            <p className='text-black text-2xl font-black text-center'>없는 페이지 왔음</p>
           </div>
         </div>
 
@@ -32,11 +31,13 @@ export default function NotFound() {
           </div>
           <div className='flex-1 flex flex-col justify-center items-center p-5'>
             <p className='text-black text-lg font-bold text-center leading-snug'>
-              요청하신 리소스가
+              저는 현재 존재하지 않는
               <br />
-              현재 존재하지 않거나
+              경로에 대한 접근 요청을
               <br />
-              이동되었습니다.
+              정중히 거절하는
+              <br />
+              업무를 맡고 있습니다.
             </p>
           </div>
         </div>
