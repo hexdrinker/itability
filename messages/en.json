@@ -21,7 +21,7 @@
   "error": {
     "invalidInput": "Nice try. Please enter an actual job or experience.",
     "generic": "Transformation failed. Please try again.",
-    "rateLimit": "Too many requests. You can transform 10 times per hour (remaining: {remaining})"
+    "rateLimit": "Too many requests. You can only transform 10 times per hour."
   },
   "notFound": {
     "top": "Page Not Found",

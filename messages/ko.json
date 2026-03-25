@@ -21,7 +21,7 @@
   "error": {
     "invalidInput": "그런 입력은 ㄴㄴ. 직업이나 경험을 입력해주세요",
     "generic": "AI 변환에 실패했습니다",
-    "rateLimit": "요청이 너무 많아요. 1시간에 10번만 변환할 수 있어요 (남은 횟수: {remaining})"
+    "rateLimit": "요청이 너무 많아요. 1시간에 10번만 변환할 수 있어요"
   },
   "notFound": {
     "top": "없는 페이지 왔음",

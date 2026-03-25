@@ -139,12 +139,10 @@ export async function POST(req: NextRequest) {
   if (ratelimit) {
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous'
-    const { success, remaining } = await ratelimit.limit(ip)
+    const { success } = await ratelimit.limit(ip)
     if (!success) {
       return NextResponse.json(
-        {
-          error: `요청이 너무 많아요. 1시간에 10번만 변환할 수 있어요 (남은 횟수: ${remaining})`,
-        },
+        { error: '요청이 너무 많아요. 1시간에 10번만 변환할 수 있어요' },
         { status: 429 },
       )
     }

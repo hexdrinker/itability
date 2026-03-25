@@ -45,8 +45,7 @@ export default function Home() {
           throw new Error(t('error.invalidInput'))
         }
         if (res.status === 429) {
-          const remaining = msg.match(/\d+$/)?.[0] ?? '0'
-          throw new Error(t('error.rateLimit', { remaining }))
+          throw new Error(t('error.rateLimit'))
         }
         throw new Error(t('error.generic'))
       }
