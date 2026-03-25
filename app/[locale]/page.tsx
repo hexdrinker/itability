@@ -3,16 +3,15 @@
 import { useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
 import { track } from '@vercel/analytics'
-
-const EXAMPLES = [
-  '맥도날드 드라이브스루 알바',
-  '편의점 야간 알바',
-  '유튜브 봄',
-  '집에서 게임함',
-  '카페 바리스타',
-]
+import { useTranslations, useLocale } from 'next-intl'
+import Link from 'next/link'
 
 export default function Home() {
+  const t = useTranslations()
+  const locale = useLocale()
+
+  const EXAMPLES = t.raw('examples') as string[]
+
   const [input, setInput] = useState('')
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
@@ -35,12 +34,27 @@ export default function Home() {
         body: JSON.stringify({ job: input }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || '변환 실패')
+      if (!res.ok) {
+        const msg = data.error || ''
+        if (
+          res.status === 422 ||
+          msg.includes('INVALID_INPUT') ||
+          msg.includes('그런 입력') ||
+          msg.includes('Nice try')
+        ) {
+          throw new Error(t('error.invalidInput'))
+        }
+        if (res.status === 429) {
+          const remaining = msg.match(/\d+$/)?.[0] ?? '0'
+          throw new Error(t('error.rateLimit', { remaining }))
+        }
+        throw new Error(t('error.generic'))
+      }
       setResult(data.result)
       setLastTransformedInput(input)
       track(`transform_success_${method}`)
     } catch (e) {
-      setError(e instanceof Error ? e.message : '오류가 발생했습니다')
+      setError(e instanceof Error ? e.message : t('error.generic'))
     } finally {
       setLoading(false)
     }
@@ -55,13 +69,25 @@ export default function Home() {
       backgroundColor: '#ffffff',
     })
     const link = document.createElement('a')
-    link.download = '있어빌리티.png'
+    link.download = `${t('title.label')}.png`
     link.href = canvas.toDataURL('image/png')
     link.click()
   }
 
+  const otherLocale = locale === 'ko' ? 'en' : 'ko'
+  const otherLocaleHref = locale === 'ko' ? '/en' : '/ko'
+  const otherLocaleLabel = locale === 'ko' ? t('locale.en') : t('locale.ko')
+
   return (
     <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
+      {/* Language switcher — fixed top right */}
+      <Link
+        href={otherLocaleHref}
+        className='fixed top-4 right-4 z-50 text-sm text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors backdrop-blur-sm'
+      >
+        {otherLocaleLabel}
+      </Link>
+
       {/* Hidden capture card — fixed 800px, off-screen */}
       <div
         ref={captureCardRef}
@@ -178,20 +204,18 @@ export default function Home() {
       {/* Title */}
       <div className='text-center mb-10'>
         <p className='text-sm text-zinc-500 mb-2 tracking-widest uppercase'>
-          있어빌리티
+          {t('title.label')}
         </p>
         <h1 className='text-4xl md:text-5xl font-bold text-white mb-3'>
-          직업을{' '}
+          {t('title.heading1')}{' '}
           <span className='text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500'>
-            있어보이게
+            {t('title.heading2')}
           </span>
         </h1>
         <p className='text-zinc-400 text-sm md:text-base'>
-          평범한 직업도 자소서에 쓸 수 있는 표현으로 바꿔드립니다
+          {t('title.subtitle')}
         </p>
-        <del className='text-zinc-600 text-sm'>
-          (자소서가 합격한다는 보장은 할 수 없습니다)
-        </del>
+        <del className='text-zinc-600 text-sm'>{t('title.disclaimer')}</del>
       </div>
 
       {/* Meme Card */}
@@ -219,7 +243,7 @@ export default function Home() {
                   handleTransform('enter')
                 }
               }}
-              placeholder={'맥도날드\n드라이브스루에서\n일함'}
+              placeholder={t('placeholder')}
               rows={3}
               className='w-full text-black text-base md:text-xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
             />
@@ -251,10 +275,8 @@ export default function Home() {
                 {result}
               </p>
             ) : (
-              <p className='text-gray-400 text-sm md:text-lg font-bold text-center leading-snug'>
-                저는 서비스 업계에서 200억 달러의 수익을 창출해내는 한 다국적
-                기업의 관계자였습니다. 그 안에서 자동차 산업과 협력하는 일을
-                했습니다.
+              <p className='text-gray-400 text-sm md:text-lg font-bold text-center leading-snug whitespace-pre-wrap'>
+                {t('result.placeholder')}
               </p>
             )}
           </div>
@@ -301,7 +323,7 @@ export default function Home() {
             disabled={!input.trim() || loading}
             className='w-full sm:w-auto bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500 text-black font-bold text-base px-8 py-3 rounded-xl transition-colors'
           >
-            {loading ? '변환 중...' : '있어보이게 변환하기'}
+            {loading ? t('button.transforming') : t('button.transform')}
           </button>
           {result && input === lastTransformedInput && (
             <>
@@ -314,25 +336,25 @@ export default function Home() {
                 }}
                 className='w-full sm:w-auto border border-zinc-700 hover:border-amber-500/50 hover:text-amber-400 text-zinc-400 font-medium text-base px-5 py-3 rounded-xl transition-colors'
               >
-                {copied ? '복사됨!' : '복사하기'}
+                {copied ? t('button.copied') : t('button.copy')}
               </button>
               <button
                 onClick={handleCapture}
                 className='w-full sm:w-auto border border-zinc-700 hover:border-amber-500/50 hover:text-amber-400 text-zinc-400 font-medium text-base px-5 py-3 rounded-xl transition-colors'
               >
-                캡쳐하기
+                {t('button.capture')}
               </button>
             </>
           )}
         </div>
         {result && input === lastTransformedInput && (
           <p className='text-xs text-zinc-600 text-center'>
-            모바일에서 UI가 깨져도 캡쳐는 이쁘게 잘 나옵니다!
+            {t('captureHint')}
           </p>
         )}
       </div>
 
-      <div className='mt-12 flex flex-col items-center'>
+      <div className='mt-12 flex flex-col items-center gap-3'>
         <p className='text-xs text-zinc-700'>
           © 2026{' '}
           <a
@@ -346,7 +368,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Loading overlay —모달 형태 */}
+      {/* Loading overlay */}
       {loading && (
         <div className='absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-md'>
           <div className='flex flex-col items-center gap-4'>
@@ -363,7 +385,7 @@ export default function Home() {
               />
             </video>
             <p className='text-center text-white text-2xl font-bold'>
-              옷을 갈아입는 중입니다...
+              {t('loading')}
             </p>
           </div>
         </div>

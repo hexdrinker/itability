@@ -1,0 +1,43 @@
+{
+  "title": {
+    "label": "Itability",
+    "heading1": "Make your",
+    "heading2": "job sound fancy",
+    "subtitle": "Turn any job into something that sounds impressive.",
+    "disclaimer": "(We can't guarantee your resume will actually get you hired)"
+  },
+  "placeholder": "Worked at\nMcDonald's\ndrive-thru",
+  "button": {
+    "transform": "Make It Sound Fancy",
+    "transforming": "Transforming...",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "capture": "Save Image"
+  },
+  "captureHint": "The saved image looks great even if the mobile UI looks off!",
+  "result": {
+    "placeholder": "I served as a key liaison at a multinational corporation generating $20B in annual revenue, collaborating directly with the global automotive sector."
+  },
+  "error": {
+    "invalidInput": "Nice try. Please enter an actual job or experience.",
+    "generic": "Transformation failed. Please try again.",
+    "rateLimit": "Too many requests. You can transform 10 times per hour (remaining: {remaining})"
+  },
+  "notFound": {
+    "top": "Page Not Found",
+    "bottom": "I am currently tasked with\npolitely declining access requests\nto non-existent paths\nwithin this system.",
+    "backHome": "Back to Home"
+  },
+  "examples": [
+    "McDonald's drive-thru worker",
+    "Night shift convenience store",
+    "Watching YouTube",
+    "Gaming at home",
+    "Cafe barista"
+  ],
+  "loading": "Upgrading your wardrobe...",
+  "locale": {
+    "ko": "한국어",
+    "en": "English"
+  }
+}
