@@ -1,4 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
+const ratelimit =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(15, '1 h'),
+        prefix: 'itability',
+      })
+    : null
 
 const SYSTEM_PROMPT = `당신은 직업/경험을 있어보이게 바꿔주는 유머 서비스입니다.
 어떤 직업이나 경험, 활동, 상태도 최대한 창의적으로 변환해주세요. 죄수, 백수, 빨래 같은 것도 재밌게 변환할 수 있습니다.
@@ -74,6 +85,17 @@ async function transformWithOpenAI(job: string): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  if (ratelimit) {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous'
+    const { success, remaining } = await ratelimit.limit(ip)
+    if (!success) {
+      return NextResponse.json(
+        { error: `요청이 너무 많아요. 1시간에 15번만 변환할 수 있어요 (남은 횟수: ${remaining})` },
+        { status: 429 },
+      )
+    }
+  }
+
   const { job } = await req.json()
 
   if (!job || typeof job !== 'string' || job.trim().length === 0) {
