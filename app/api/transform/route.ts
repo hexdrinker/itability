@@ -15,13 +15,14 @@ const PROMPT = (job: string) =>
 
 규칙:
 - 반드시 2문장. 절대 3문장 이상 쓰지 마. 각 문장은 30자 이내로 간결하게
-- 숫자를 터무니없이 부풀려 (연 매출 수조 원, 글로벌 수억 명 고객, 세계 몇 위 기업 등)
 - 입력 단어는 절대 그대로 쓰지 말고 거창하게 바꿔 (드라이브스루 → 자동차 산업 or 편의점 → 연중무휴 생활 밀착형 유통 채널)
 - 쉬운 단어만 써. 어려운 전문용어 금지
 - 수상·칭찬·피드백 문구 금지 ("최우수", "인정받은" 등)
 - 읽는 사람이 "이거 완전 ○○ 얘기잖아 ㅋㅋ" 하고 웃을 수 있어야 함
 - 좋은 예시: "저는 서비스 업계에서 연 매출 200억 달러를 기록하는 한 다국적 기업의 관계자였으며, 그 안에서 자동차 산업과 협력하는 일을 맡았습니다."
+- 개-, 존-, 병-, 미친- 같은 강조 접두사는 동물/질병으로 해석하지 말고 "매우/완전히"의 강조 표현으로 이해해 (예: 개백수 = 완전한 백수, 개고생 = 심한 고생)
 - 나쁜 예시: "고객 접점 최적화 및 멀티태스킹 역량을 강화하였습니다" (← 너무 딱딱하고 안 웃김)
+- 나쁜 예시: "개백수 → 글로벌 펫 케어 산업" (← '개'를 동물로 잘못 해석한 것)
 
 있어보이는 버전만 출력해.`
 
@@ -35,7 +36,7 @@ async function transformWithClaude(job: string): Promise<string> {
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
+      max_tokens: 150,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: PROMPT(job) }],
     }),
@@ -59,7 +60,7 @@ async function transformWithOpenAI(job: string): Promise<string> {
     },
     body: JSON.stringify({
       model: 'gpt-4o-mini',
-      max_tokens: 300,
+      max_tokens: 150,
       messages: [{ role: 'user', content: PROMPT(job) }],
     }),
   })
@@ -103,7 +104,10 @@ export async function POST(req: NextRequest) {
         )
       }
       if (!openaiKey) {
-        return NextResponse.json({ error: 'AI 변환에 실패했습니다' }, { status: 500 })
+        return NextResponse.json(
+          { error: 'AI 변환에 실패했습니다' },
+          { status: 500 },
+        )
       }
       // Claude 실패 → OpenAI fallback
     }
@@ -114,6 +118,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ result, provider: 'openai' })
   } catch (e) {
     console.error('[OpenAI]', e)
-    return NextResponse.json({ error: 'AI 변환에 실패했습니다' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'AI 변환에 실패했습니다' },
+      { status: 500 },
+    )
   }
 }

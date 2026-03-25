@@ -18,7 +18,7 @@ export default function Home() {
   const [error, setError] = useState('')
   const [lastTransformedInput, setLastTransformedInput] = useState('')
   const [copied, setCopied] = useState(false)
-  const captureRef = useRef<HTMLDivElement>(null)
+  const captureCardRef = useRef<HTMLDivElement>(null)
 
   async function handleTransform() {
     if (!input.trim()) return
@@ -44,8 +44,8 @@ export default function Home() {
   }
 
   async function handleCapture() {
-    if (!captureRef.current) return
-    const canvas = await html2canvas(captureRef.current, {
+    if (!captureCardRef.current) return
+    const canvas = await html2canvas(captureCardRef.current, {
       useCORS: true,
       scale: 2,
       backgroundColor: '#ffffff',
@@ -57,7 +57,120 @@ export default function Home() {
   }
 
   return (
-    <main className='min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
+    <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
+      {/* Hidden capture card — fixed 800px, off-screen */}
+      <div
+        ref={captureCardRef}
+        style={{
+          position: 'absolute',
+          left: -9999,
+          top: 0,
+          width: 800,
+          border: '4px solid black',
+          overflow: 'hidden',
+          fontFamily: 'inherit',
+        }}
+      >
+        {/* Top row */}
+        <div
+          style={{
+            display: 'flex',
+            borderBottom: '4px solid black',
+            background: 'white',
+          }}
+        >
+          <div
+            style={{
+              width: 360,
+              flexShrink: 0,
+              borderRight: '4px solid black',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src='/images/origin-pooh.png'
+              alt=''
+              style={{
+                width: '100%',
+                aspectRatio: '718/568',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: 28,
+              background: 'white',
+            }}
+          >
+            <p
+              style={{
+                color: 'black',
+                fontSize: 26,
+                fontWeight: 700,
+                textAlign: 'center',
+                lineHeight: 1.45,
+                whiteSpace: 'pre-wrap',
+                margin: 0,
+              }}
+            >
+              {input}
+            </p>
+          </div>
+        </div>
+        {/* Bottom row */}
+        <div style={{ display: 'flex', background: '#dce8f5' }}>
+          <div
+            style={{
+              width: 360,
+              flexShrink: 0,
+              borderRight: '4px solid black',
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src='/images/rich-pooh.png'
+              alt=''
+              style={{
+                width: '100%',
+                aspectRatio: '718/568',
+                objectFit: 'cover',
+                objectPosition: 'top',
+                display: 'block',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: 28,
+            }}
+          >
+            <p
+              style={{
+                color: 'black',
+                fontSize: 22,
+                fontWeight: 700,
+                textAlign: 'center',
+                lineHeight: 1.55,
+                whiteSpace: 'pre-wrap',
+                margin: 0,
+              }}
+            >
+              {result}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Title */}
       <div className='text-center mb-10'>
         <p className='text-sm text-zinc-500 mb-2 tracking-widest uppercase'>
@@ -78,10 +191,7 @@ export default function Home() {
       </div>
 
       {/* Meme Card */}
-      <div
-        ref={captureRef}
-        className='w-full max-w-2xl border-4 border-black overflow-hidden'
-      >
+      <div className='w-full max-w-2xl border-4 border-black overflow-hidden'>
         {/* Top row — origin pooh + input */}
         <div className='flex border-b-4 border-black bg-white'>
           {/* Pooh image — crossfade on loading */}
@@ -215,6 +325,11 @@ export default function Home() {
             </>
           )}
         </div>
+        {result && input === lastTransformedInput && (
+          <p className='text-xs text-zinc-600 text-center'>
+            모바일에서 UI가 깨져도 캡쳐는 이쁘게 잘 나옵니다!
+          </p>
+        )}
       </div>
 
       <div className='mt-12 flex flex-col items-center'>
