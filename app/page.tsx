@@ -85,19 +85,21 @@ export default function Home() {
         {/* Top row — origin pooh + input */}
         <div className='flex border-b-4 border-black bg-white'>
           {/* Pooh image — crossfade on loading */}
-          <div className='w-[45%] shrink-0 border-r-4 border-black relative overflow-hidden aspect-[718/568]'>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src='/images/origin-pooh.png'
-              alt='일반 곰돌이 푸'
-              className={`w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-0' : 'opacity-100'}`}
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src='/images/rich-pooh.png'
-              alt='있어보이는 곰돌이 푸'
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-100' : 'opacity-0'}`}
-            />
+          <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-white flex items-center justify-center'>
+            <div className='w-full aspect-[718/568] relative overflow-hidden'>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src='/images/origin-pooh.png'
+                alt='일반 곰돌이 푸'
+                className={`w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-0' : 'opacity-100'}`}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src='/images/rich-pooh.png'
+                alt='있어보이는 곰돌이 푸'
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-100' : 'opacity-0'}`}
+              />
+            </div>
           </div>
           {/* Input */}
           <div className='flex-1 flex flex-col justify-center p-5 bg-white'>
@@ -119,13 +121,15 @@ export default function Home() {
 
         {/* Bottom row — rich pooh + result */}
         <div className='flex bg-[#dce8f5]'>
-          <div className='w-[45%] shrink-0 border-r-4 border-black aspect-[718/568]'>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src='/images/rich-pooh.png'
-              alt='있어보이는 곰돌이 푸'
-              className='w-full h-full object-cover object-top'
-            />
+          <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-[#dce8f5] flex items-center justify-center'>
+            <div className='w-full aspect-[718/568] overflow-hidden'>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src='/images/rich-pooh.png'
+                alt='있어보이는 곰돌이 푸'
+                className='w-full h-full object-cover object-top'
+              />
+            </div>
           </div>
           {/* Result */}
           <div className='flex-1 flex flex-col justify-center p-5'>
