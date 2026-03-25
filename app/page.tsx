@@ -21,7 +21,7 @@ export default function Home() {
   const captureCardRef = useRef<HTMLDivElement>(null)
 
   async function handleTransform() {
-    if (!input.trim()) return
+    if (!input.trim() || loading) return
     setLoading(true)
     setResult('')
     setError('')
@@ -266,17 +266,19 @@ export default function Home() {
 
       {/* Error */}
       {error && (
-        <div className='mt-4 w-full max-w-2xl border-4 border-red-800 overflow-hidden flex'>
-          <div className='w-[30%] shrink-0'>
+        <div className='mt-4 w-full max-w-2xl border-4 border-red-800 overflow-hidden flex flex-col sm:flex-row'>
+          <div className='w-full sm:w-[30%] sm:shrink-0'>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src='/images/pooh-with-hammer.jpeg'
               alt='에러'
-              className='w-full h-full object-cover'
+              className='w-full object-cover'
             />
           </div>
-          <div className='flex-1 flex items-center bg-red-950 px-5'>
-            <p className='text-red-400 text-sm font-medium'>{error}</p>
+          <div className='flex flex-1 items-center justify-center sm:justify-start bg-red-950 px-5 py-4'>
+            <p className='text-red-400 text-sm font-medium text-center sm:text-left'>
+              {error}
+            </p>
           </div>
         </div>
       )}
