@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://itability.vercel.app'
+const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://itability.vercel.app').replace(/\/$/, '')
 
 export const metadata: Metadata = {
   title: '있어빌리티 — 직업을 있어보이게',
