@@ -84,7 +84,7 @@ export default function Home() {
         {/* Top row — origin pooh + input */}
         <div className='flex border-b-4 border-black bg-white'>
           {/* Pooh image — crossfade on loading */}
-          <div className='w-[45%] shrink-0 border-r-4 border-black relative overflow-hidden'>
+          <div className='w-[45%] shrink-0 border-r-4 border-black relative overflow-hidden aspect-[718/568]'>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src='/images/origin-pooh.png'
@@ -111,19 +111,19 @@ export default function Home() {
               }}
               placeholder={'맥도날드\n드라이브스루에서\n일함'}
               rows={3}
-              className='w-full text-black text-xl md:text-2xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
+              className='w-full text-black text-base md:text-xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
             />
           </div>
         </div>
 
         {/* Bottom row — rich pooh + result */}
         <div className='flex bg-[#dce8f5]'>
-          <div className='w-[45%] shrink-0 border-r-4 border-black'>
+          <div className='w-[45%] shrink-0 border-r-4 border-black aspect-[718/568]'>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src='/images/rich-pooh.png'
               alt='있어보이는 곰돌이 푸'
-              className='w-full h-full object-cover'
+              className='w-full h-full object-cover object-top'
             />
           </div>
           {/* Result */}
@@ -135,22 +135,12 @@ export default function Home() {
                 <div className='h-4 bg-blue-200 rounded w-4/6' />
               </div>
             ) : result ? (
-              <p className='text-black text-lg md:text-xl font-bold text-center leading-snug whitespace-pre-wrap'>
+              <p className='text-black text-sm md:text-lg font-bold text-center leading-snug whitespace-pre-wrap'>
                 {result}
               </p>
             ) : (
-              <p className='text-gray-400 text-lg md:text-xl font-bold text-center leading-snug'>
-                저는 서비스 업계에서
-                <br />
-                200억 달러의 수익을
-                <br />
-                창출해내는 한 다국적
-                <br />
-                기업의 관계자였습니다.
-                <br />
-                그 안에서는 자동차 산업과
-                <br />
-                협력하는 일을 했습니다.
+              <p className='text-gray-400 text-sm md:text-lg font-bold text-center leading-snug'>
+                저는 서비스 업계에서 200억 달러의 수익을 창출해내는 한 다국적 기업의 관계자였습니다. 그 안에서 자동차 산업과 협력하는 일을 했습니다.
               </p>
             )}
           </div>
