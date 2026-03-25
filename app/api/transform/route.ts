@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
   if (!job || typeof job !== 'string' || job.trim().length === 0) {
     return NextResponse.json({ error: '직업을 입력해주세요' }, { status: 400 })
   }
-  if (job.length > 200) {
+  if (job.length > 60) {
     return NextResponse.json({ error: '입력이 너무 깁니다' }, { status: 400 })
   }
 

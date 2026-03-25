@@ -244,8 +244,12 @@ export default function Home() {
               }}
               placeholder={t('placeholder')}
               rows={3}
+              maxLength={60}
               className='w-full text-black text-base md:text-xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
             />
+            <p className={`text-right text-xs mt-1 ${input.length >= 60 ? 'text-red-400' : 'text-gray-300'}`}>
+              {input.length}/60
+            </p>
           </div>
         </div>
 
