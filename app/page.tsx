@@ -195,26 +195,9 @@ export default function Home() {
       </div>
 
       {/* Meme Card */}
-      <div className='relative w-full max-w-2xl border-4 border-black overflow-hidden'>
-        {/* Loading overlay */}
-        {loading && (
-          <div className='absolute inset-0 z-10 bg-black/80 flex items-center justify-center'>
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className='w-full h-full object-cover'
-            >
-              <source src='/videos/loading.mp4' type='video/mp4' />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src='/images/loading.gif' alt='로딩 중' />
-            </video>
-          </div>
-        )}
-
+      <div className='w-full max-w-2xl border-4 border-black overflow-hidden'>
         {/* Top row — origin pooh + input */}
-        <div className='flex border-b-4 border-black bg-white'>
+        <div className='relative flex border-b-4 border-black bg-white'>
           <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-white flex items-center justify-center'>
             <div className='w-full aspect-[718/568] relative overflow-hidden'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -362,6 +345,29 @@ export default function Home() {
           </a>
         </p>
       </div>
+
+      {/* Loading overlay —모달 형태 */}
+      {loading && (
+        <div className='absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-md'>
+          <div className='flex flex-col items-center gap-4'>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className='w-[200px] sm:w-[clamp(160px,30vw,340px)] rounded-full shadow-2xl'
+            >
+              <source
+                src='/videos/loading.mp4'
+                type='video/mp4'
+              />
+            </video>
+            <p className='text-center text-white text-2xl font-bold'>
+              옷을 갈아입는 중입니다...
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
