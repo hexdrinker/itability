@@ -297,7 +297,7 @@ export default function Home() {
 
         <div className='flex flex-col sm:flex-row gap-3 w-full sm:w-auto px-4 sm:px-0'>
           <button
-            onClick={handleTransform}
+            onClick={() => handleTransform('button')}
             disabled={!input.trim() || loading}
             className='w-full sm:w-auto bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-700 disabled:text-zinc-500 text-black font-bold text-base px-8 py-3 rounded-xl transition-colors'
           >
