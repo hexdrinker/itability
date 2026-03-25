@@ -23,6 +23,7 @@ export default function Home() {
 
   async function handleTransform(method: 'button' | 'enter' = 'button') {
     if (!input.trim() || loading) return
+    track(`transform_try_${method}`)
     setLoading(true)
     setResult('')
     setError('')
@@ -37,7 +38,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || '변환 실패')
       setResult(data.result)
       setLastTransformedInput(input)
-      track('transform', { method })
+      track(`transform_success_${method}`)
     } catch (e) {
       setError(e instanceof Error ? e.message : '오류가 발생했습니다')
     } finally {
@@ -194,23 +195,33 @@ export default function Home() {
       </div>
 
       {/* Meme Card */}
-      <div className='w-full max-w-2xl border-4 border-black overflow-hidden'>
+      <div className='relative w-full max-w-2xl border-4 border-black overflow-hidden'>
+        {/* Loading overlay */}
+        {loading && (
+          <div className='absolute inset-0 z-10 bg-black/80 flex items-center justify-center'>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className='w-full h-full object-cover'
+            >
+              <source src='/videos/loading.mp4' type='video/mp4' />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src='/images/loading.gif' alt='로딩 중' />
+            </video>
+          </div>
+        )}
+
         {/* Top row — origin pooh + input */}
         <div className='flex border-b-4 border-black bg-white'>
-          {/* Pooh image — crossfade on loading */}
           <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-white flex items-center justify-center'>
             <div className='w-full aspect-[718/568] relative overflow-hidden'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src='/images/origin-pooh.png'
                 alt='일반 곰돌이 푸'
-                className={`w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-0' : 'opacity-100'}`}
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src='/images/rich-pooh.png'
-                alt='있어보이는 곰돌이 푸'
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${loading ? 'opacity-100' : 'opacity-0'}`}
+                className='w-full h-full object-cover'
               />
             </div>
           </div>
