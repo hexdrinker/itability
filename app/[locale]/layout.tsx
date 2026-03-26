@@ -92,13 +92,9 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages()
 
   return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-        <Analytics />
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      {children}
+      <Analytics />
+    </NextIntlClientProvider>
   )
 }
