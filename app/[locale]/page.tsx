@@ -239,7 +239,7 @@ export default function Home() {
             </div>
           </div>
           {/* Input */}
-          <div className='flex-1 flex flex-col justify-center p-5 bg-white'>
+          <div className='relative flex-1 flex flex-col justify-center p-5 bg-white'>
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -255,7 +255,7 @@ export default function Home() {
               className='w-full text-black text-base md:text-xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
             />
             <p
-              className={`text-right text-xs mt-1 ${input.length >= 60 ? 'text-red-400' : 'text-gray-300'}`}
+              className={`absolute bottom-2 right-3 text-xs ${input.length >= 60 ? 'text-red-400' : 'text-gray-300'}`}
             >
               {input.length}/60
             </p>
