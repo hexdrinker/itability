@@ -79,17 +79,13 @@ export default function Home() {
   const otherLocaleLabel = locale === 'ko' ? t('locale.en') : t('locale.ko')
 
   return (
-    <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16 pb-24 md:pb-16'>
+    <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
       {/* Desktop sidebar ads — fixed left/right, hidden on mobile */}
       <div className='hidden md:flex fixed left-2 top-1/2 -translate-y-1/2 z-40 w-[160px]'>
         <AdUnit slot='3978339929' className='w-full' />
       </div>
       <div className='hidden md:flex fixed right-2 top-1/2 -translate-y-1/2 z-40 w-[160px]'>
         <AdUnit slot='3978339929' className='w-full' />
-      </div>
-      {/* Mobile bottom banner — fixed bottom, hidden on desktop */}
-      <div className='md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0f0f0f]'>
-        <AdUnit slot='5948095390' className='w-full' />
       </div>
       {/* Language switcher — fixed top right */}
       <Link
@@ -381,6 +377,11 @@ export default function Home() {
             hexdrinker
           </a>
         </p>
+      </div>
+
+      {/* Mobile bottom ad — inline below footer, hidden on desktop */}
+      <div className='md:hidden w-full mt-6'>
+        <AdUnit slot='5948095390' className='w-full' />
       </div>
 
       {/* Loading overlay */}
