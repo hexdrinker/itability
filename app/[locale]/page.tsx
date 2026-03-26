@@ -225,7 +225,7 @@ export default function Home() {
       </div>
 
       {/* Meme Card */}
-      <div className='w-full max-w-2xl border-4 border-black overflow-hidden md:px-6 px-0'>
+      <div className='w-full max-w-2xl border-4 border-black overflow-hidden md:mx-6 mx-0'>
         {/* Top row — sad pepe + input */}
         <div className='relative flex border-b-4 border-black bg-white'>
           <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-white flex items-center justify-center'>
