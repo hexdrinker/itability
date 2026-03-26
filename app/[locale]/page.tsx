@@ -79,7 +79,7 @@ export default function Home() {
   const otherLocaleLabel = locale === 'ko' ? t('locale.en') : t('locale.ko')
 
   return (
-    <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
+    <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16 pb-24 md:pb-16'>
       {/* Desktop sidebar ads — fixed left/right, hidden on mobile */}
       <div className='hidden md:flex fixed left-2 top-1/2 -translate-y-1/2 z-40 w-[160px]'>
         <AdUnit slot='3978339929' className='w-full' />
