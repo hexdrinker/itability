@@ -89,7 +89,7 @@ export default function Home() {
       {/* Language switcher — fixed top right */}
       <Link
         href={otherLocaleHref}
-        className='fixed top-4 right-4 z-50 text-sm text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors backdrop-blur-sm'
+        className='fixed top-4 right-4 z-30 text-sm text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors backdrop-blur-sm'
       >
         {otherLocaleLabel}
       </Link>
@@ -124,7 +124,7 @@ export default function Home() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src='/images/origin-pooh.png'
+              src='/images/sad-pepe.webp'
               alt=''
               style={{
                 width: '100%',
@@ -170,7 +170,7 @@ export default function Home() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src='/images/rich-pooh.png'
+              src='/images/tuxedo-pepe.webp'
               alt=''
               style={{
                 width: '100%',
@@ -225,15 +225,15 @@ export default function Home() {
       </div>
 
       {/* Meme Card */}
-      <div className='w-full max-w-2xl border-4 border-black overflow-hidden'>
-        {/* Top row — origin pooh + input */}
+      <div className='w-full max-w-2xl border-4 border-black overflow-hidden md:px-6 px-0'>
+        {/* Top row — sad pepe + input */}
         <div className='relative flex border-b-4 border-black bg-white'>
           <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-white flex items-center justify-center'>
-            <div className='w-full aspect-[718/568] relative overflow-hidden'>
+            <div className='w-full relative overflow-hidden'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='/images/origin-pooh.png'
-                alt='일반 곰돌이 푸'
+                src='/images/sad-pepe.webp'
+                alt='슬픈 페페'
                 className='w-full h-full object-cover'
               />
             </div>
@@ -262,14 +262,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Bottom row — rich pooh + result */}
+        {/* Bottom row — tuxedo pepe + result */}
         <div className='flex bg-[#dce8f5]'>
           <div className='w-[45%] shrink-0 border-r-4 border-black self-stretch bg-[#dce8f5] flex items-center justify-center'>
-            <div className='w-full aspect-[718/568] overflow-hidden'>
+            <div className='w-full overflow-hidden'>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='/images/rich-pooh.png'
-                alt='있어보이는 곰돌이 푸'
+                src='/images/tuxedo-pepe.webp'
+                alt='턱시도를 입은 페페'
                 className='w-full h-full object-cover object-top'
               />
             </div>
@@ -299,12 +299,18 @@ export default function Home() {
       {error && (
         <div className='mt-4 w-full max-w-2xl border-4 border-red-800 overflow-hidden flex flex-col sm:flex-row'>
           <div className='w-full sm:w-[30%] sm:shrink-0'>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src='/images/pooh-with-hammer.jpeg'
-              alt='에러'
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
               className='w-full object-cover'
-            />
+            >
+              <source
+                src='/videos/puch-pepe.mp4'
+                type='video/mp4'
+              />
+            </video>
           </div>
           <div className='flex flex-1 items-center justify-center sm:justify-start bg-red-950 px-5 py-4'>
             <p className='text-red-400 text-sm font-medium text-center sm:text-left'>
@@ -382,7 +388,7 @@ export default function Home() {
 
       {/* Loading overlay */}
       {loading && (
-        <div className='absolute inset-0 z-10 flex items-center justify-center bg-black/50 backdrop-blur-md'>
+        <div className='absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md'>
           <div className='flex flex-col items-center gap-4'>
             <video
               autoPlay
@@ -392,7 +398,7 @@ export default function Home() {
               className='w-[200px] sm:w-[clamp(160px,30vw,340px)] rounded-full shadow-2xl'
             >
               <source
-                src='/videos/loading.mp4'
+                src='/videos/loading-pepe.mp4'
                 type='video/mp4'
               />
             </video>
