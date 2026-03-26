@@ -15,6 +15,7 @@ type Props = {
 
 export default function AdUnit({ slot, className }: Props) {
   useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') return
     try {
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch {}
@@ -23,7 +24,7 @@ export default function AdUnit({ slot, className }: Props) {
   return (
     <ins
       className={`adsbygoogle ${className ?? ''}`}
-      style={{ display: 'block', minHeight: 0 }}
+      style={{ display: 'block' }}
       data-ad-client='ca-pub-7909759552833703'
       data-ad-slot={slot}
       data-ad-format='auto'

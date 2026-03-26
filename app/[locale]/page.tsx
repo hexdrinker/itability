@@ -373,13 +373,10 @@ export default function Home() {
         )}
       </div>
 
-      {/* Mobile bottom ad — inline below footer, hidden on desktop */}
-      <div className='md:hidden w-full mt-6'>
-        <AdUnit
-          slot='5948095390'
-          className='w-full'
-        />
-      </div>
+      {/* Mobile bottom ad — uncomment after AdSense approval */}
+      {/* <div className='md:hidden w-full mt-6'>
+        <AdUnit slot='5948095390' className='w-full' />
+      </div> */}
 
       <div className='mt-12 flex flex-col items-center gap-3'>
         <p className='text-xs text-zinc-700'>
