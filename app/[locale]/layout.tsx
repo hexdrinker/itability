@@ -93,14 +93,6 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <head>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
-          async
-          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7909759552833703'
-          crossOrigin='anonymous'
-        />
-      </head>
       <body>
         <NextIntlClientProvider messages={messages}>
           {children}
