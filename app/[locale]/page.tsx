@@ -82,10 +82,16 @@ export default function Home() {
     <main className='relative min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-4 py-16'>
       {/* Desktop sidebar ads — fixed left/right, hidden on mobile */}
       <div className='hidden md:flex fixed left-2 top-1/2 -translate-y-1/2 z-40 w-[160px]'>
-        <AdUnit slot='3978339929' className='w-full' />
+        <AdUnit
+          slot='3978339929'
+          className='w-full'
+        />
       </div>
       <div className='hidden md:flex fixed right-2 top-1/2 -translate-y-1/2 z-40 w-[160px]'>
-        <AdUnit slot='3978339929' className='w-full' />
+        <AdUnit
+          slot='3978339929'
+          className='w-full'
+        />
       </div>
       {/* Language switcher — fixed top right */}
       <Link
@@ -255,7 +261,9 @@ export default function Home() {
               maxLength={60}
               className='w-full text-black text-base md:text-xl font-bold text-center leading-snug bg-transparent resize-none outline-none placeholder-gray-300'
             />
-            <p className={`text-right text-xs mt-1 ${input.length >= 60 ? 'text-red-400' : 'text-gray-300'}`}>
+            <p
+              className={`text-right text-xs mt-1 ${input.length >= 60 ? 'text-red-400' : 'text-gray-300'}`}
+            >
               {input.length}/60
             </p>
           </div>
@@ -365,6 +373,14 @@ export default function Home() {
         )}
       </div>
 
+      {/* Mobile bottom ad — inline below footer, hidden on desktop */}
+      <div className='md:hidden w-full mt-6'>
+        <AdUnit
+          slot='5948095390'
+          className='w-full'
+        />
+      </div>
+
       <div className='mt-12 flex flex-col items-center gap-3'>
         <p className='text-xs text-zinc-700'>
           © 2026{' '}
@@ -377,11 +393,6 @@ export default function Home() {
             hexdrinker
           </a>
         </p>
-      </div>
-
-      {/* Mobile bottom ad — inline below footer, hidden on desktop */}
-      <div className='md:hidden w-full mt-6'>
-        <AdUnit slot='5948095390' className='w-full' />
       </div>
 
       {/* Loading overlay */}
