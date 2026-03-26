@@ -128,7 +128,7 @@ export default function Home() {
               alt=''
               style={{
                 width: '100%',
-                aspectRatio: '718/568',
+                aspectRatio: '1/1',
                 objectFit: 'cover',
                 display: 'block',
               }}
@@ -174,7 +174,7 @@ export default function Home() {
               alt=''
               style={{
                 width: '100%',
-                aspectRatio: '718/568',
+                aspectRatio: '1/1',
                 objectFit: 'cover',
                 objectPosition: 'top',
                 display: 'block',
