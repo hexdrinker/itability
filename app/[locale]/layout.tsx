@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import '../globals.css'
 
 const BASE_URL = (
@@ -98,6 +99,12 @@ export default async function LocaleLayout({ children, params }: Props) {
           {children}
         </NextIntlClientProvider>
         <Analytics />
+        <Script
+          async
+          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7909759552833703'
+          crossOrigin='anonymous'
+          strategy='afterInteractive'
+        />
       </body>
     </html>
   )
