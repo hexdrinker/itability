@@ -7,7 +7,7 @@ const ratelimit =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Ratelimit({
         redis: Redis.fromEnv(),
-        limiter: Ratelimit.slidingWindow(100, '1 h'),
+        limiter: Ratelimit.slidingWindow(10, '1 h'),
         prefix: 'itability',
       })
     : null
