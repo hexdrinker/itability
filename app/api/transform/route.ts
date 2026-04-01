@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
+import { detectLang, resolveNicknameContext } from './resolve'
 
 const ratelimit =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -89,38 +90,6 @@ Good Output: I engineered complex logic architectures to consistently exceed qua
 
 OUTPUT FORMAT: Plain text only. No quotes, no markdown, no bullet points. Just the 2 sentences.`
 
-function detectLang(text: string): 'ko' | 'en' {
-  return /[\uAC00-\uD7A3]/.test(text) ? 'ko' : 'en'
-}
-
-async function resolveNicknameContext(
-  job: string,
-  lang: 'ko' | 'en',
-): Promise<string | null> {
-  const prompt =
-    lang === 'ko'
-      ? `"${job}"이 실존 인물(정치인, 연예인, 스포츠 선수 등)의 별명·풍자·팬덤 표현이거나, 특정 인물의 지지자·팬덤을 가리키는 표현이면 "YES: " 뒤에 누구를 가리키는지와 어떤 맥락인지 한 줄로 설명해. 일반 직업·활동·상태면 "NO"만 출력해.`
-      : `If "${job}" is a nickname, satire, or fandom term for a real person (politician, celebrity, athlete, etc.) or refers to their supporters/fandom, respond with "YES: " followed by a one-line explanation of who it refers to and the context. If it's a regular job, activity, or state, respond with just "NO".`
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY!,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 100,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
-  if (!res.ok) return null
-  const data = await res.json()
-  const text = data.content?.[0]?.text ?? ''
-  if (text.startsWith('YES:')) return text.slice(4).trim()
-  return null
-}
 
 async function transformWithClaude(
   job: string,
@@ -134,6 +103,10 @@ async function transformWithClaude(
       : `${basePrompt}\n\nContext: "${job}" refers to ${nicknameContext}. You must reflect this context in your transformation.`
     : basePrompt
 
+  console.log(
+    `[Transform] input="${job}" lang=${lang} hasContext=${!!nicknameContext}${nicknameContext ? ` context="${nicknameContext}"` : ''}`,
+  )
+  const start = Date.now()
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -148,13 +121,19 @@ async function transformWithClaude(
       messages: [{ role: 'user', content }],
     }),
   })
+  const elapsed = Date.now() - start
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
+    console.error(`[Transform] input="${job}" error=${res.status} (${elapsed}ms)`)
     throw new Error(`Claude ${res.status}: ${JSON.stringify(body)}`)
   }
   const data = await res.json()
   const text = data.content?.[0]?.text ?? ''
-  if (text.includes('__INVALID__')) throw new Error('INVALID_INPUT')
+  if (text.includes('__INVALID__')) {
+    console.log(`[Transform] input="${job}" result=INVALID (${elapsed}ms)`)
+    throw new Error('INVALID_INPUT')
+  }
+  console.log(`[Transform] input="${job}" result=OK output="${text.slice(0, 80)}..." (${elapsed}ms)`)
   return text
 }
 
@@ -162,6 +141,8 @@ async function transformWithOpenAI(
   job: string,
   lang: 'ko' | 'en',
 ): Promise<string> {
+  console.log(`[OpenAI] input="${job}" lang=${lang}`)
+  const start = Date.now()
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -179,9 +160,15 @@ async function transformWithOpenAI(
       ],
     }),
   })
-  if (!res.ok) throw new Error(`OpenAI error: ${res.status}`)
+  const elapsed = Date.now() - start
+  if (!res.ok) {
+    console.error(`[OpenAI] input="${job}" error=${res.status} (${elapsed}ms)`)
+    throw new Error(`OpenAI error: ${res.status}`)
+  }
   const data = await res.json()
-  return data.choices?.[0]?.message?.content ?? ''
+  const text = data.choices?.[0]?.message?.content ?? ''
+  console.log(`[OpenAI] input="${job}" result=OK output="${text.slice(0, 80)}..." (${elapsed}ms)`)
+  return text
 }
 
 export async function POST(req: NextRequest) {
@@ -222,6 +209,12 @@ export async function POST(req: NextRequest) {
   if (claudeKey) {
     try {
       const nicknameContext = await resolveNicknameContext(trimmed, lang)
+      if (nicknameContext === 'REAL_NAME') {
+        return NextResponse.json(
+          { error: '그런 입력은 ㄴㄴ. 직업이나 경험을 입력해주세요' },
+          { status: 422 },
+        )
+      }
       const result = await transformWithClaude(trimmed, lang, nicknameContext)
       return NextResponse.json({ result, provider: 'claude' })
     } catch (e) {
