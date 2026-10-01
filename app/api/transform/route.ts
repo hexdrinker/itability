@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
-import { detectLang, resolveNicknameContext } from './resolve'
+import {
+  CLAUDE_MODEL_OPTIONS,
+  detectLang,
+  readClaudeText,
+  resolveNicknameContext,
+} from './resolve'
 
 const ratelimit =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -117,7 +122,7 @@ async function transformWithClaude(
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      ...CLAUDE_MODEL_OPTIONS,
       max_tokens: 150,
       system:
         lang === 'ko'
@@ -137,8 +142,8 @@ async function transformWithClaude(
     throw new Error(`Claude ${res.status}: ${JSON.stringify(body)}`)
   }
   const data = await res.json()
-  const text = data.content?.[0]?.text ?? ''
-  if (text.includes('__INVALID__')) {
+  const text = readClaudeText(data)
+  if (text === null || text.includes('__INVALID__')) {
     console.log(`[Transform] input="${job}" result=INVALID (${elapsed}ms)`)
     throw new Error('INVALID_INPUT')
   }

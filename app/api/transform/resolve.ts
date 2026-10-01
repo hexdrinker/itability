@@ -1,3 +1,21 @@
+export const CLAUDE_MODEL_OPTIONS = {
+  model: 'claude-sonnet-5-5',
+  thinking: { type: 'between_tools' },
+  output_config: { effort: 'high' },
+}
+
+type ClaudeResponse = {
+  stop_reason?: string
+  content?: { type: string; text?: string }[]
+}
+
+export function readClaudeText(data: ClaudeResponse): string | null {
+  if (data.stop_reason === 'refusal') {
+    return null
+  }
+  return data.content?.find((block) => block.type === 'text')?.text ?? ''
+}
+
 export function detectLang(text: string): 'ko' | 'en' {
   return /[\uAC00-\uD7A3]/.test(text) ? 'ko' : 'en'
 }
@@ -61,7 +79,7 @@ ${tavilyContext}
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      ...CLAUDE_MODEL_OPTIONS,
       max_tokens: 200,
       messages: [{ role: 'user', content: prompt }],
     }),
@@ -72,14 +90,24 @@ ${tavilyContext}
     return 'REAL_NAME'
   }
   const data = await res.json()
-  const text = (data.content?.[0]?.text ?? '').trim()
+  const rawText = readClaudeText(data)
+  if (rawText === null) {
+    console.log(`[Verify] input="${job}" result=REFUSAL → INVALID (${elapsed}ms)`)
+    return 'REAL_NAME'
+  }
+  const text = rawText.trim()
 
   if (/^REAL_NAME$/i.test(text)) {
     console.log(`[Verify] input="${job}" result=REAL_NAME (${elapsed}ms)`)
     return 'REAL_NAME'
   }
 
-  const context = text.startsWith('YES:') ? text.slice(4).trim() : text
+  if (!text.startsWith('YES:')) {
+    console.log(`[Verify] input="${job}" result=UNKNOWN → REAL_NAME (${elapsed}ms)`)
+    return 'REAL_NAME'
+  }
+
+  const context = text.slice(4).trim()
   console.log(`[Verify] input="${job}" result=YES context="${context}" (${elapsed}ms)`)
   return context
 }
@@ -93,12 +121,12 @@ export async function resolveNicknameContext(
       ? `"${job}"을 다음 기준으로 분류해.
 - 실존 인물의 실명(본명)으로 판단되면: "REAL_NAME"만 출력
 - 실존 인물의 별명·풍자·팬덤 표현이거나 지지자·팬덤을 가리키는 표현이고 확실히 알면: "YES: 누구를 가리키는지와 어떤 맥락인지 한 줄 설명" 형식으로 출력
-- 별명인지 실명인지 잘 모르면: "SEARCH"만 출력
+- 특정 인물을 가리키는 것 같은데 별명인지 실명인지 잘 모르면: "SEARCH"만 출력
 - 일반 직업·활동·상태면: "NO"만 출력`
       : `Classify "${job}" by the following criteria:
 - If it appears to be a real person's actual name (not a nickname): respond with just "REAL_NAME"
 - If it's a nickname, satire, or fandom term for a real person and you know for sure: respond "YES: <one-line explanation>"
-- If unsure whether it's a name or nickname: respond with just "SEARCH"
+- If it seems to refer to a specific person but you're unsure whether it's a name or nickname: respond with just "SEARCH"
 - If it's a regular job, activity, or state: respond with just "NO"`
 
   const start = Date.now()
@@ -110,7 +138,7 @@ export async function resolveNicknameContext(
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      ...CLAUDE_MODEL_OPTIONS,
       max_tokens: 200,
       messages: [{ role: 'user', content: prompt }],
     }),
@@ -121,7 +149,12 @@ export async function resolveNicknameContext(
     return null
   }
   const data = await res.json()
-  const text = (data.content?.[0]?.text ?? '').trim()
+  const rawText = readClaudeText(data)
+  if (rawText === null) {
+    console.log(`[Nickname] input="${job}" result=REFUSAL → INVALID (${elapsed}ms)`)
+    return 'REAL_NAME'
+  }
+  const text = rawText.trim()
 
   if (/^NO$/i.test(text)) {
     console.log(`[Nickname] input="${job}" result=NO (${elapsed}ms)`)
@@ -142,7 +175,12 @@ export async function resolveNicknameContext(
     return await verifyWithContext(job, tavilyResult, lang)
   }
 
-  const context = text.startsWith('YES:') ? text.slice(4).trim() : text
+  if (!text.startsWith('YES:')) {
+    console.log(`[Nickname] input="${job}" result=UNKNOWN → NO (${elapsed}ms)`)
+    return null
+  }
+
+  const context = text.slice(4).trim()
   console.log(`[Nickname] input="${job}" result=YES context="${context}" (${elapsed}ms)`)
   return context
 }
